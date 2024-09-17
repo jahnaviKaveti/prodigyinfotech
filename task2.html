@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        #stopwatch {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        #time {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div id="stopwatch">
+        <div id="time">00:00:00</div>
+        <button id="start">Start</button>
+        <button id="stop">Stop</button>
+        <button id="reset">Reset</button>
+    </div>
+
+    <script>
+        let startTime = 0;
+        let intervalId = null;
+
+        const timeElement = document.getElementById('time');
+        const startButton = document.getElementById('start');
+        const stopButton = document.getElementById('stop');
+        const resetButton = document.getElementById('reset');
+
+        function formatTime(ms) {
+            const seconds = Math.floor(ms / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+
+            const remainingSeconds = seconds % 60;
+            const remainingMinutes = minutes % 60;
+
+            return `${hours.toString().padStart(2, '0')}:${remainingMinutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        function updateTimer() {
+            const elapsedTime = Date.now() - startTime;
+            timeElement.textContent = formatTime(elapsedTime);
+        }
+
+        startButton.addEventListener('click', () => {
+            startTime = Date.now() - (startTime || 0);
+            intervalId = setInterval(updateTimer, 10);
+            startButton.disabled = true;
+            stopButton.disabled = false;
+            resetButton.disabled = true;
+        });
+
+        stopButton.addEventListener('click', () => {
+            clearInterval(intervalId);
+            startButton.disabled = false;
+            stopButton.disabled = true;
+            resetButton.disabled = false;
+        });
+
+        resetButton.addEventListener('click', () => {
+            clearInterval(intervalId);
+            startTime = 0;
+            timeElement.textContent = '00:00:00';
+            startButton.disabled = false;
+            stopButton.disabled = true;
+            resetButton.disabled = true;
+        });
+    </script>
+</body>
+</html>
